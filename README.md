@@ -2,8 +2,6 @@
 
 **Chrome Extension (Manifest V3)** — tools to sort tabs, reorganize windows, save and restore sessions, and bulk-clean duplicates or whole domains — without leaving one popup.
 
-> **По-русски:** расширение для упорядочивания вкладок и окон в Chrome — сортировка (в т.ч. глобальные **Ctrl+Shift+1–4**), переезд вкладок по доменам, слияние окон, сохранение/загрузка сессии в JSON, слоты **Hold/Fetch**, поиск вкладки (**Ctrl+K**), отмена крупных операций. Установка: «Расширения» → режим разработчика → **Загрузить распакованное расширение** → папка `alt_tab`.
-
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ![Screenshot](screenshot.png)
