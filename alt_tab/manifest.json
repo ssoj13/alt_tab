@@ -1,0 +1,45 @@
+{
+  "manifest_version": 3,
+  "name": "Alt Tab",
+  "version": "1.4",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Alt Tab",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "permissions": ["tabs", "commands", "scripting", "storage", "tabGroups"],
+  "host_permissions": ["<all_urls>"],
+  "commands": {
+    "sort_by_name": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+1"
+      },
+      "description": "Sort tabs by name"
+    },
+    "sort_by_domain": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+2"
+      },
+      "description": "Sort tabs by domain"
+    },
+    "sort_by_last_visit": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+3"
+      },
+      "description": "Sort tabs by last visit"
+    },
+    "sort_by_creation_time": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+4"
+      },
+      "description": "Sort tabs by creation time"
+    }
+  }
+}

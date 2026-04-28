@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alt Tab</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div id="app">
+    <header class="header">
+      <div class="header-bar">
+        <div class="header-title-row">
+          <h1 class="app-title" title="Tab and window tools">Alt Tab</h1>
+          <button type="button" class="theme-btn" id="theme_toggle" aria-label="Cycle theme: system, dark, light">
+            <span class="theme-icon" id="theme_icon" aria-hidden="true">◐</span>
+          </button>
+          <button type="button" class="undo-btn" id="undo_btn" aria-label="Undo last bulk action" disabled>
+            <span class="undo-icon" aria-hidden="true">↶</span>
+            <span class="undo-label" id="undo_label">Nothing to undo</span>
+          </button>
+        </div>
+        <div class="header-stats-block">
+          <div class="stats" id="stats_panel" title="Window and tab counts&#10;Refresh when you open the popup">0 windows · 0 tabs</div>
+          <div class="daily-stats" id="daily_stats" title="Tabs closed today by Close duplicate URLs and Close this domain">Today: 0 dup · 0 domain</div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <section class="card" aria-labelledby="h-jump">
+        <div class="card-head" title="Search any tab across all windows&#10;Up and Down to navigate, Enter to jump, Esc to close">
+          <h2 class="card-title" id="h-jump">Jump</h2>
+        </div>
+        <div class="card-body">
+          <div class="field-row" style="margin-top: 0;">
+            <input type="search" class="form-input" id="jump_query" placeholder="Jump to tab…  (Ctrl+K)" autocomplete="off" spellcheck="false"
+              title="Matches tab title or URL (case-insensitive)&#10;Up and Down to navigate, Enter to focus the tab">
+          </div>
+          <ul class="jump-results" id="jump_results" role="listbox" aria-label="Matching tabs" hidden></ul>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="h-sort">
+        <div class="card-head" title="Sort each window’s tab strip&#10;No reload. Shortcuts ⌃⇧1–4 work globally">
+          <h2 class="card-title" id="h-sort">Sort tabs</h2>
+        </div>
+        <div class="card-body">
+          <div class="sort-by-row">
+            <span class="sort-by-label">By:</span>
+            <div class="sort-buttons">
+              <button type="button" class="btn btn-primary" id="sort_tabs"
+                title="Sort all windows by title A→Z&#10;Does not reload. Shortcut ⌃⇧1">
+                Name <span class="btn-shortcut">⌃⇧1</span>
+              </button>
+              <button type="button" class="btn btn-primary" id="sort_tabs_by_domain"
+                title="Sort all windows by hostname&#10;No reload. Shortcut ⌃⇧2">
+                Domain <span class="btn-shortcut">⌃⇧2</span>
+              </button>
+              <button type="button" class="btn btn-primary" id="sort_tabs_last_visited"
+                title="Sort by last focused time, per window&#10;Shortcut ⌃⇧3">
+                Recent <span class="btn-shortcut">⌃⇧3</span>
+              </button>
+              <button type="button" class="btn btn-primary" id="sort_tabs_created"
+                title="Sort by tab creation order (id)&#10;Shortcut ⌃⇧4">
+                Created <span class="btn-shortcut">⌃⇧4</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="h-windows">
+        <div class="card-head" title="Move, merge, group, and extract tabs&#10;Close this domain, duplicates, or mute all">
+          <h2 class="card-title" id="h-windows">Windows, domains &amp; cleanup</h2>
+        </div>
+        <div class="card-body">
+          <div>
+            <div class="field-row" style="margin-top: 0;">
+              <input type="search" class="form-input" id="extract_string" placeholder="Search…" autocomplete="off" spellcheck="false" aria-describedby="extract_match_line"
+                title="Match tab title or full URL&#10;Case-insensitive; count below updates">
+              <button type="button" class="btn btn-primary" id="extract_tabs"
+                title="Move matching tabs to one new window&#10;Same tab ids—no reload">
+                Extract
+              </button>
+            </div>
+            <p class="extract-match-line" id="extract_match_line" role="status" aria-live="polite"></p>
+          </div>
+          <div class="btn-grid">
+            <button type="button" class="btn btn-secondary" id="regroup_tabs"
+              title="Domains with three or more tabs&#10;Each gets a new window; skips internal pages">
+              Extract by domain
+            </button>
+            <button type="button" class="btn btn-secondary" id="extract_domain"
+              title="Active tab’s site: gather all matches&#10;Needs a normal web page focused">
+              Extract this domain
+            </button>
+          </div>
+          <div class="btn-grid">
+            <button type="button" class="btn btn-secondary" id="merge_windows"
+              title="Bring every tab into this window&#10;Close other windows when empty">
+              Merge all
+            </button>
+            <button type="button" class="btn btn-secondary" id="group_tab_groups"
+              title="This window: tab groups by hostname&#10;Needs two or more tabs per site">
+              Group by domain
+            </button>
+          </div>
+          <div class="btn-grid">
+            <button type="button" class="btn btn-danger" id="close_this_domain"
+              title="First click: Sure? then confirm&#10;Closes every tab for the active tab’s site (all windows)">
+              Close this domain
+            </button>
+            <button type="button" class="btn btn-secondary" id="remove_duplicates"
+              title="First click: Sure? then confirm&#10;Closes duplicate URLs; keeps first tab per URL">
+              Close duplicate URLs
+            </button>
+          </div>
+          <div class="btn-grid cols-1">
+            <button type="button" class="btn btn-warning" id="mute_all"
+              title="Mute every tab that is not muted yet&#10;All windows">
+              Mute all tabs
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="h-session">
+        <div class="card-head" title="Save or load tab URLs as JSON&#10;Delete: two-step confirm and auto-backup first">
+          <h2 class="card-title" id="h-session">Session</h2>
+        </div>
+        <div class="card-body">
+          <div class="session-actions">
+            <button type="button" class="btn btn-success" id="save_tabs"
+              title="Download session as JSON file&#10;Same format Append and Load use">
+              Save
+            </button>
+            <button type="button" class="btn btn-quiet" id="append_tabs"
+              title="Pick JSON: open each group in a new window&#10;Does not close current tabs">
+              Append
+            </button>
+            <button type="button" class="btn btn-secondary" id="load_tabs"
+              title="Pick JSON: rebuild windows from file&#10;Http and https URLs only">
+              Load
+            </button>
+            <button type="button" class="btn btn-quiet" id="copy_md"
+              title="Copy all tabs as a markdown list&#10;Grouped by window, pastable into notes">
+              Copy MD
+            </button>
+          </div>
+          <div class="session-delete-row">
+            <button type="button" class="btn btn-danger" id="close_tabs"
+              title="First click: Sure? timer starts&#10;Move off the button to cancel&#10;Second click: backup JSON, close all">
+              Delete
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="h-presets">
+        <div class="card-head" title="Full-session snapshots (all tabs, all windows)&#10;Hold = save snapshot; Fetch = restore — same rules as Session → Load">
+          <h2 class="card-title" id="h-presets">Snapshots</h2>
+        </div>
+        <div class="card-body">
+          <div class="btn-grid cols-4">
+            <button type="button" class="btn btn-quiet" id="preset_hold_1"
+              title="Hold 1 — save full-session snapshot here&#10;Overwrites previous snapshot in this slot">
+              Hold 1
+            </button>
+            <button type="button" class="btn btn-quiet" id="preset_hold_2"
+              title="Hold 2 — save full-session snapshot here&#10;Overwrites previous snapshot in this slot">
+              Hold 2
+            </button>
+            <button type="button" class="btn btn-quiet" id="preset_hold_3"
+              title="Hold 3 — save full-session snapshot here&#10;Overwrites previous snapshot in this slot">
+              Hold 3
+            </button>
+            <button type="button" class="btn btn-quiet" id="preset_hold_4"
+              title="Hold 4 — save full-session snapshot here&#10;Overwrites previous snapshot in this slot">
+              Hold 4
+            </button>
+          </div>
+          <div class="btn-grid cols-4">
+            <button type="button" class="btn btn-secondary" id="preset_fetch_1"
+              title="Fetch 1 — restore full session from snapshot in Hold 1&#10;Http(s) URLs only; like Session → Load">
+              Fetch 1
+            </button>
+            <button type="button" class="btn btn-secondary" id="preset_fetch_2"
+              title="Fetch 2 — restore full session from snapshot in Hold 2&#10;Http(s) URLs only; like Session → Load">
+              Fetch 2
+            </button>
+            <button type="button" class="btn btn-secondary" id="preset_fetch_3"
+              title="Fetch 3 — restore full session from snapshot in Hold 3&#10;Http(s) URLs only; like Session → Load">
+              Fetch 3
+            </button>
+            <button type="button" class="btn btn-secondary" id="preset_fetch_4"
+              title="Fetch 4 — restore full session from snapshot in Hold 4&#10;Http(s) URLs only; like Session → Load">
+              Fetch 4
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="status_bar" class="status-bar" role="status" aria-live="polite" data-level="info"
+      title="Last action message"></div>
+  </div>
+
+  <input type="file" id="file_input" class="visually-hidden" accept=".json,application/json" tabindex="-1" aria-hidden="true"
+    title="Choose a session JSON file">
+
+  <script src="popup_working.js"></script>
+</body>
+</html>
